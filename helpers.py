@@ -9,7 +9,6 @@ import logging
 load_dotenv('.env.local')
 
 genai.configure(api_key=os.getenv('GENAI_API_KEY'))
-logging.basicConfig(filename='.logs')
 
 # Set up the model
 generation_config = {
