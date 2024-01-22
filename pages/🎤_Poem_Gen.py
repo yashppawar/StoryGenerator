@@ -1,6 +1,9 @@
 import streamlit as st
 from helpers import *
 
+"""
+# Poem Generator
+"""
 poem_topic = st.text_input("Topic: ")
 
 if st.button("✨ Generate"):
