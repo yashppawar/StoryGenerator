@@ -3,10 +3,13 @@ import google.generativeai as genai
 import os
 import requests
 import io
+import json
+import logging
 
 load_dotenv('.env.local')
 
 genai.configure(api_key=os.getenv('GENAI_API_KEY'))
+logging.basicConfig(filename='.logs')
 
 # Set up the model
 generation_config = {
@@ -35,7 +38,27 @@ safety_settings = [
     },
 ]
 
-POEM = "Write a poem about a "
+POEM = "poem"
+STORY = "story"
+
+metaprompt = """
+Output the following JSON format 
+{{
+    "text": "# prompt for {type}",
+    "title": "# title of the {type}",
+	"image": "# prompt for generating image"
+}}
+
+for the given topic {topic}
+
+for example topic: 'a rabbit and a turtle'
+output:
+{{
+    "text": "write a {type} about a rabbit and a turtle racing against each other, and unexpectedly the turtle wins",
+    "title": "The Race of Rabit and Turtle",
+    "image": "create an image consisting a rabbit and turtle running towards a finish line"
+}}
+"""
 
 model = genai.GenerativeModel(
     model_name="gemini-pro",
@@ -55,8 +78,19 @@ def generate_image(image_description):
       "inputs": image_description,
     })
 
+    logging.info(f"generated image: {image_description}")
     return io.BytesIO(image_bytes)
 
-def generate_text(topic, type):
-    response = model.generate_content(type + topic)
+def generate_text(prompt):
+    response = model.generate_content(prompt)
+    logging.info(f"generated text: {prompt}")
     return response.text
+
+def generate_metadata(topic, type):
+    prompt = metaprompt.format(type=type, topic=topic)
+    response = model.generate_content(prompt)
+    data = json.loads(response.text)
+
+    logging.info(f"generated metadata: {data}")
+
+    return data
