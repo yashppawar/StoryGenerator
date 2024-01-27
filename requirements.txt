@@ -1,0 +1,6 @@
+gTTS==2.5.0
+protobuf==4.25.2
+python-dotenv==1.0.1
+requests==2.31.0
+streamlit==1.30.0
+tinydb==4.8.0

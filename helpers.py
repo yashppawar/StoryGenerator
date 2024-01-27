@@ -8,6 +8,13 @@ import logging
 
 load_dotenv('.env.local')
 
+logging.basicConfig(
+    filename='.log',
+    level=logging.DEBUG,
+    format="%(levelname)s [%(asctime)s] : %(message)s (%(filename)s)",
+    datefmt="%d/%m/%Y %I:%M:%S %p"
+)
+
 genai.configure(api_key=os.getenv('GENAI_API_KEY'))
 
 # Set up the model
